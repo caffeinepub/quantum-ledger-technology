@@ -279,7 +279,7 @@ function TeamCard({
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const _actor = useActor(); // reserved for future use
+  const { actor } = useActor();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
   const [formData, setFormData] = useState({
@@ -311,7 +311,6 @@ export default function App() {
       "market",
       "businessmodel",
       "competitive",
-      "traction",
       "team",
       "investment",
       "contact",
@@ -345,13 +344,13 @@ export default function App() {
     }
     setFormState("loading");
     try {
-      const subject = encodeURIComponent(
-        `QLT Investor Inquiry - ${formData.name}`,
+      if (!actor) throw new Error("Not connected");
+      await actor.submitLead(
+        formData.name,
+        formData.email,
+        formData.company,
+        formData.interestLevel,
       );
-      const body = encodeURIComponent(
-        `Name: ${formData.name}\nEmail: ${formData.email}\nCompany/Fund: ${formData.company}\nInterest Level: ${formData.interestLevel}\nMessage: ${textarea}`,
-      );
-      window.location.href = `mailto:info@qlt.ltd?subject=${subject}&body=${body}`;
       setFormState("success");
     } catch {
       setErrorMsg("Something went wrong. Please try again.");
@@ -364,7 +363,6 @@ export default function App() {
     { id: "howitworks", label: "How It Works" },
     { id: "roadmap", label: "Roadmap" },
     { id: "market", label: "Market" },
-    { id: "traction", label: "Traction" },
     { id: "team", label: "Team" },
     { id: "investment", label: "Invest" },
   ];
@@ -412,21 +410,18 @@ export default function App() {
                   {link.label}
                 </button>
               ))}
-              <a
-                href="https://qloudtechnologies.com/publications/"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Button
+                onClick={() => scrollTo("investment")}
                 data-ocid="nav.primary_button"
-                className="text-sm px-4 py-2 rounded-lg font-medium inline-flex items-center"
+                className="text-sm px-4 py-2 rounded-lg font-medium"
                 style={{
                   background: "linear-gradient(135deg, #0ea5e9, #7c3aed)",
+                  border: "none",
                   color: "white",
-                  borderRadius: "8px",
-                  textDecoration: "none",
                 }}
               >
-                Publications
-              </a>
+                Investor Deck
+              </Button>
             </div>
 
             {/* Mobile Toggle */}
@@ -455,20 +450,18 @@ export default function App() {
                 {link.label}
               </button>
             ))}
-            <a
-              href="https://qloudtechnologies.com/publications/"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Button
+              onClick={() => scrollTo("investment")}
               data-ocid="nav.primary_button"
-              className="w-full block text-center py-2 rounded-lg font-medium"
+              className="w-full"
               style={{
                 background: "linear-gradient(135deg, #0ea5e9, #7c3aed)",
+                border: "none",
                 color: "white",
-                textDecoration: "none",
               }}
             >
-              Publications
-            </a>
+              Investor Deck
+            </Button>
           </div>
         )}
       </nav>
@@ -515,9 +508,9 @@ export default function App() {
             className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight mb-6 fade-in-up"
             style={{ transitionDelay: "0.1s" }}
           >
-            Quantum-Safe Blockchain Infrastructure
+            Quantum-Safe Infrastructure
             <br />
-            <span className="gradient-text">for the Future of DeFi</span>
+            <span className="gradient-text">for the Future of Finance</span>
           </h1>
 
           <p
@@ -547,22 +540,20 @@ export default function App() {
             >
               View Technology <ChevronRight size={16} />
             </Button>
-            <a
-              href="https://qloudtechnologies.com/publications/"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Button
+              onClick={() => scrollTo("investment")}
               data-ocid="hero.secondary_button"
-              className="px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center justify-center"
+              size="lg"
+              variant="outline"
+              className="px-8 py-3 rounded-lg font-semibold text-base"
               style={{
                 borderColor: "rgba(14,165,233,0.5)",
                 color: "#38bdf8",
                 background: "transparent",
-                border: "1px solid rgba(14,165,233,0.5)",
-                textDecoration: "none",
               }}
             >
-              Publications
-            </a>
+              Investor Deck
+            </Button>
             <Button
               onClick={() => scrollTo("contact")}
               data-ocid="hero.secondary_button"
@@ -1038,7 +1029,7 @@ export default function App() {
               {[
                 {
                   phase: "Phase 1",
-                  year: "2026",
+                  year: "2024",
                   title: "QLT Hardware Wallet",
                   desc: "Consumer-grade quantum-secure hardware wallet. The first device to protect crypto assets from both classical and quantum attacks.",
                   status: "active",
@@ -1046,7 +1037,7 @@ export default function App() {
                 },
                 {
                   phase: "Phase 2",
-                  year: "2028",
+                  year: "2025",
                   title: "Secure Exchange Infrastructure",
                   desc: "B2B exchange security layer. QLT-secured trading infrastructure for institutional crypto exchanges.",
                   status: "upcoming",
@@ -1054,7 +1045,7 @@ export default function App() {
                 },
                 {
                   phase: "Phase 3",
-                  year: "2030",
+                  year: "2026",
                   title: "QLT DeFi Ecosystem",
                   desc: "Quantum-safe DeFi protocol integrations. Bringing ZVC and 3SoC protection to decentralized finance.",
                   status: "future",
@@ -1062,7 +1053,7 @@ export default function App() {
                 },
                 {
                   phase: "Phase 4",
-                  year: "2032",
+                  year: "2027",
                   title: "Quantum-Secure Web3 Network",
                   desc: "Full decentralized quantum-safe network. The foundation for the next generation of internet finance infrastructure.",
                   status: "future",
@@ -1228,6 +1219,16 @@ export default function App() {
               </div>
             ))}
           </div>
+
+          <div className="fade-in-up glass-card rounded-xl p-8 text-center">
+            <div className="text-3xl font-display font-bold gradient-text mb-2">
+              €95M NPV
+            </div>
+            <p className="text-gray-300 text-lg">
+              Based on a conservative 1% penetration of the Serviceable
+              Available Market in 5 years. Source: PrecedenceResearch.com
+            </p>
+          </div>
         </div>
       </section>
 
@@ -1354,6 +1355,16 @@ export default function App() {
               </ul>
             </div>
           </div>
+
+          <div className="mt-8 fade-in-up glass-card rounded-xl p-6 text-center">
+            <div className="text-4xl font-display font-bold gradient-text-neon mb-2">
+              $50M ARR
+            </div>
+            <p className="text-gray-400">
+              Revenue target by Year 3, driven by enterprise exchange contracts
+              and consumer hardware sales
+            </p>
+          </div>
         </div>
       </section>
 
@@ -1460,225 +1471,6 @@ export default function App() {
 
       <div className="section-divider" />
 
-      {/* ── Traction ──────────────────────────────────────────── */}
-      <section
-        id="traction"
-        data-ocid="traction.section"
-        className="py-24 relative overflow-hidden"
-        style={{
-          background:
-            "linear-gradient(135deg, #020818 0%, #041030 40%, #060c24 70%, #020818 100%)",
-        }}
-      >
-        {/* Background glow orbs */}
-        <div
-          style={{
-            position: "absolute",
-            top: "10%",
-            left: "5%",
-            width: 300,
-            height: 300,
-            borderRadius: "50%",
-            background:
-              "radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 70%)",
-            pointerEvents: "none",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: "10%",
-            right: "5%",
-            width: 250,
-            height: 250,
-            borderRadius: "50%",
-            background:
-              "radial-gradient(circle, rgba(168,85,247,0.08) 0%, transparent 70%)",
-            pointerEvents: "none",
-          }}
-        />
-
-        <div className="max-w-6xl mx-auto px-4 relative">
-          {/* Section title */}
-          <div className="text-center mb-16">
-            <h2 className="font-display text-4xl sm:text-5xl font-bold text-white fade-in-up">
-              Traction: <span className="gradient-text">Where we are now?</span>
-            </h2>
-          </div>
-
-          {/* Cards grid with SVG connector overlay */}
-          <div className="relative">
-            {/* Dotted curved connector SVG */}
-            <svg
-              aria-hidden="true"
-              className="absolute inset-0 w-full h-full pointer-events-none hidden lg:block"
-              viewBox="0 0 900 340"
-              preserveAspectRatio="none"
-              style={{ zIndex: 0 }}
-            >
-              <defs>
-                <linearGradient
-                  id="connectorGrad"
-                  x1="0%"
-                  y1="0%"
-                  x2="100%"
-                  y2="0%"
-                >
-                  <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.6" />
-                  <stop offset="50%" stopColor="#a855f7" stopOpacity="0.6" />
-                  <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.6" />
-                </linearGradient>
-              </defs>
-              {/* Row 1 connector */}
-              <path
-                d="M 150 85 C 250 40, 350 130, 450 85 C 550 40, 650 130, 750 85"
-                fill="none"
-                stroke="url(#connectorGrad)"
-                strokeWidth="2"
-                strokeDasharray="6,5"
-                strokeLinecap="round"
-                opacity="0.7"
-              />
-              {/* Row 2 connector */}
-              <path
-                d="M 150 255 C 250 210, 350 300, 450 255 C 550 210, 650 300, 750 255"
-                fill="none"
-                stroke="url(#connectorGrad)"
-                strokeWidth="2"
-                strokeDasharray="6,5"
-                strokeLinecap="round"
-                opacity="0.7"
-              />
-              {/* Vertical connector between rows */}
-              <path
-                d="M 450 110 C 480 160, 420 190, 450 220"
-                fill="none"
-                stroke="url(#connectorGrad)"
-                strokeWidth="1.5"
-                strokeDasharray="4,4"
-                strokeLinecap="round"
-                opacity="0.5"
-              />
-            </svg>
-
-            {/* Cards */}
-            <div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 relative"
-              style={{ zIndex: 1 }}
-            >
-              {[
-                {
-                  stat: "50+",
-                  label: "European Partners",
-                  gradient:
-                    "linear-gradient(135deg, rgba(14,165,233,0.18) 0%, rgba(14,165,233,0.04) 100%)",
-                  border: "rgba(14,165,233,0.35)",
-                  color: "#38bdf8",
-                },
-                {
-                  stat: "30+",
-                  label: "Countries",
-                  gradient:
-                    "linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(99,102,241,0.04) 100%)",
-                  border: "rgba(99,102,241,0.35)",
-                  color: "#818cf8",
-                },
-                {
-                  stat: "7",
-                  label: "European Cybersecurity Centers of Excellence",
-                  gradient:
-                    "linear-gradient(135deg, rgba(168,85,247,0.18) 0%, rgba(168,85,247,0.04) 100%)",
-                  border: "rgba(168,85,247,0.35)",
-                  color: "#c084fc",
-                },
-                {
-                  stat: "9",
-                  label: "Pending Patents",
-                  gradient:
-                    "linear-gradient(135deg, rgba(0,245,255,0.15) 0%, rgba(0,245,255,0.03) 100%)",
-                  border: "rgba(0,245,255,0.3)",
-                  color: "#00f5ff",
-                },
-                {
-                  stat: "4",
-                  label: "Peer-reviewed Publications",
-                  gradient:
-                    "linear-gradient(135deg, rgba(56,189,248,0.18) 0%, rgba(56,189,248,0.04) 100%)",
-                  border: "rgba(56,189,248,0.3)",
-                  color: "#38bdf8",
-                },
-                {
-                  stat: "Seal of Excellence",
-                  label: "European Union",
-                  gradient:
-                    "linear-gradient(135deg, rgba(234,179,8,0.18) 0%, rgba(234,179,8,0.04) 100%)",
-                  border: "rgba(234,179,8,0.4)",
-                  color: "#fbbf24",
-                  isSeal: true,
-                },
-              ].map((item, i) => (
-                <div
-                  key={item.label}
-                  className="fade-in-up rounded-2xl p-7 flex flex-col items-center text-center"
-                  style={{
-                    background: item.gradient,
-                    border: `1px solid ${item.border}`,
-                    boxShadow: `0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px ${item.border}`,
-                    backdropFilter: "blur(12px)",
-                    transitionDelay: `${i * 0.08}s`,
-                  }}
-                  data-ocid={`traction.card.${i + 1}`}
-                >
-                  {item.isSeal ? (
-                    <>
-                      <div
-                        style={{
-                          width: 56,
-                          height: 56,
-                          borderRadius: "50%",
-                          background:
-                            "linear-gradient(135deg, #fbbf24, #f59e0b)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          marginBottom: 12,
-                          fontSize: 26,
-                          boxShadow: "0 0 18px rgba(251,191,36,0.4)",
-                        }}
-                      >
-                        ★
-                      </div>
-                      <div
-                        className="font-display font-bold text-2xl mb-1"
-                        style={{ color: item.color }}
-                      >
-                        {item.stat}
-                      </div>
-                    </>
-                  ) : (
-                    <div
-                      className="font-display font-extrabold mb-2"
-                      style={{
-                        color: item.color,
-                        fontSize: "clamp(2.5rem, 5vw, 3.5rem)",
-                        lineHeight: 1,
-                      }}
-                    >
-                      {item.stat}
-                    </div>
-                  )}
-                  <div className="text-gray-200 font-medium text-sm leading-snug mt-1">
-                    {item.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div className="section-divider" />
-
       {/* ── Team ──────────────────────────────────────────────────── */}
       <section
         id="team"
@@ -1751,13 +1543,6 @@ export default function App() {
                 initials: "RC",
                 gradient: "linear-gradient(135deg, #0ea5e9, #00f5ff)",
               },
-              {
-                name: "Asad Khan",
-                title: "Head Business Dev",
-                bio: "Dynamic professional with over 15 years of experience in sales, marketing and relationship management in B2C, B2B for corporate & government",
-                initials: "AK",
-                gradient: "linear-gradient(135deg, #f59e0b, #0ea5e9)",
-              },
             ].map((member, i) => (
               <TeamCard key={member.name} {...member} index={i} />
             ))}
@@ -1790,7 +1575,7 @@ export default function App() {
           >
             QLT is seeking{" "}
             <span className="text-white font-bold">
-              $1M in strategic seed investment
+              $2.5M in strategic seed investment
             </span>{" "}
             to accelerate development of quantum-safe blockchain infrastructure
             and bring Phase 1 products to market.
@@ -1860,7 +1645,7 @@ export default function App() {
                 boxShadow: "0 0 30px rgba(14,165,233,0.4)",
               }}
             >
-              Contact Us <ArrowRight size={16} />
+              Request Investor Deck <ArrowRight size={16} />
             </Button>
             <Button
               onClick={() => scrollTo("contact")}
@@ -2082,11 +1867,11 @@ export default function App() {
             style={{ transitionDelay: "0.2s" }}
           >
             <a
-              href="mailto:info@qlt.ltd"
+              href="mailto:investors@quantumledger.tech"
               className="flex items-center gap-2 hover:text-qblue transition-colors"
               data-ocid="contact.link"
             >
-              <Mail size={16} /> info@qlt.ltd
+              <Mail size={16} /> investors@quantumledger.tech
             </a>
             <div className="flex items-center gap-3">
               <a
@@ -2250,7 +2035,7 @@ export default function App() {
                 <Download size={14} /> Download Whitepaper
               </a>
               <a
-                href="mailto:info@qlt.ltd"
+                href="mailto:investors@quantumledger.tech"
                 className="flex items-center gap-2 text-gray-500 text-sm hover:text-qblue transition-colors"
                 data-ocid="footer.link"
               >
