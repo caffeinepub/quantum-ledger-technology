@@ -797,111 +797,23 @@ export default function App() {
           </div>
 
           {/* Architecture Diagram */}
-          <div className="fade-in-up max-w-2xl mx-auto">
+          <div className="fade-in-up max-w-3xl mx-auto">
             <h3 className="text-center text-gray-400 text-sm font-medium mb-8 uppercase tracking-widest">
-              QLT Architecture
+              QLT Features Overview
             </h3>
             <div
-              className="relative flex items-center justify-center"
-              style={{ height: "280px" }}
+              className="rounded-2xl overflow-hidden p-4"
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
             >
-              {/* Center node */}
-              <div
-                className="absolute z-10 w-20 h-20 rounded-full flex items-center justify-center text-center text-xs font-bold pulse-glow"
-                style={{
-                  background: "linear-gradient(135deg, #0ea5e9, #7c3aed)",
-                  color: "white",
-                  fontSize: "10px",
-                }}
-              >
-                QLT
-                <br />
-                CORE
-              </div>
-              {/* Connecting lines */}
-              <svg
-                aria-hidden="true"
-                className="absolute inset-0"
-                width="100%"
-                height="100%"
-                style={{ overflow: "visible" }}
-              >
-                <defs>
-                  <filter id="glow">
-                    <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                    <feMerge>
-                      <feMergeNode in="coloredBlur" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
-                </defs>
-                <line
-                  x1="50%"
-                  y1="50%"
-                  x2="50%"
-                  y2="10%"
-                  stroke="#0ea5e9"
-                  strokeWidth="1.5"
-                  strokeDasharray="4,4"
-                  filter="url(#glow)"
-                />
-                <line
-                  x1="50%"
-                  y1="50%"
-                  x2="15%"
-                  y2="85%"
-                  stroke="#a855f7"
-                  strokeWidth="1.5"
-                  strokeDasharray="4,4"
-                  filter="url(#glow)"
-                />
-                <line
-                  x1="50%"
-                  y1="50%"
-                  x2="85%"
-                  y2="85%"
-                  stroke="#00f5ff"
-                  strokeWidth="1.5"
-                  strokeDasharray="4,4"
-                  filter="url(#glow)"
-                />
-              </svg>
-              {/* ZVC */}
-              <div
-                className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 hexagon flex items-center justify-center text-center text-xs font-bold"
-                style={{
-                  background: "rgba(14,165,233,0.15)",
-                  border: "2px solid rgba(14,165,233,0.4)",
-                  color: "#38bdf8",
-                  fontSize: "11px",
-                }}
-              >
-                ZVC
-              </div>
-              {/* 3SoC */}
-              <div
-                className="absolute bottom-0 left-4 w-24 h-24 hexagon flex items-center justify-center text-center text-xs font-bold"
-                style={{
-                  background: "rgba(168,85,247,0.15)",
-                  border: "2px solid rgba(168,85,247,0.4)",
-                  color: "#c084fc",
-                  fontSize: "11px",
-                }}
-              >
-                3SoC
-              </div>
-              {/* QRUECA */}
-              <div
-                className="absolute bottom-0 right-4 w-24 h-24 hexagon flex items-center justify-center text-center text-xs font-bold"
-                style={{
-                  background: "rgba(0,245,255,0.08)",
-                  border: "2px solid rgba(0,245,255,0.3)",
-                  color: "#00f5ff",
-                  fontSize: "10px",
-                }}
-              >
-                QRUECA
-              </div>
+              <img
+                src="/assets/uploads/QLT-Feature-White1-1.png"
+                alt="Quantum Ledger Technology Features - AZT, ZVC, 3SoC, QRUECA"
+                className="w-full h-auto rounded-xl"
+                style={{ maxHeight: "480px", objectFit: "contain" }}
+              />
             </div>
           </div>
         </div>
@@ -1129,6 +1041,19 @@ export default function App() {
                     <p className="text-gray-400 text-xs leading-relaxed">
                       {phase.desc}
                     </p>
+                    {phase.status === "active" && (
+                      <div
+                        className="mt-4 rounded-lg overflow-hidden flex justify-center"
+                        style={{ background: "rgba(0,0,0,0.3)" }}
+                      >
+                        <img
+                          src="/assets/uploads/QLT-N-2.png"
+                          alt="QLT Hardware Wallet Device"
+                          className="w-full h-auto mx-auto block"
+                          style={{ maxHeight: "160px", objectFit: "contain" }}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -1467,7 +1392,7 @@ export default function App() {
         className="py-24 relative overflow-hidden"
         style={{
           background:
-            "linear-gradient(135deg, #020818 0%, #041030 40%, #060c24 70%, #020818 100%)",
+            "radial-gradient(ellipse at 50% 50%, rgba(14,165,233,0.06) 0%, transparent 70%), #000",
         }}
       >
         {/* Background glow orbs */}
